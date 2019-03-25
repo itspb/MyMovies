@@ -1,4 +1,4 @@
-package com.example.android.mymovies2.api;
+package com.example.android.mymovies2.network;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
@@ -9,6 +9,7 @@ public class ApiFactory {
     private static ApiFactory apiFactory;
     private static Retrofit retrofit;
     private static final String BASE_URL = "https://api.themoviedb.org/3/discover/";
+    public static final int API_DEFAULT_PAGE_KEY = 1;
 
     private ApiFactory() {
         retrofit = new Retrofit.Builder()
@@ -16,8 +17,7 @@ public class ApiFactory {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())  // используем rxjava для отслеживания процесса получения данных
                 .baseUrl(BASE_URL)                                          // добавляем базовый URL, он должен заканчиваться на слеш
                 .build();
-
-    };
+    }
 
     public static ApiFactory getInstance() {
         if (apiFactory == null) {

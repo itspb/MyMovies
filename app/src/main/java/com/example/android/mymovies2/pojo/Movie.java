@@ -2,6 +2,7 @@ package com.example.android.mymovies2.pojo;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.v7.util.DiffUtil;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -55,6 +56,18 @@ public class Movie {
     @SerializedName("release_date")
     @Expose
     private String releaseDate;
+
+    public static final DiffUtil.ItemCallback<Movie> DIFF_CALL = new DiffUtil.ItemCallback<Movie>() {
+        @Override
+        public boolean areItemsTheSame(Movie oldItem, Movie newItem) {
+            return oldItem.id == newItem.id;
+        }
+
+        @Override
+        public boolean areContentsTheSame(Movie oldItem, Movie newItem) {
+            return oldItem.id == newItem.id;
+        }
+    };
 
     public String getFullSmallPosterPath () {
         return BASE_POSTER_URL + SMALL_POSTER_SIZE + posterPath;

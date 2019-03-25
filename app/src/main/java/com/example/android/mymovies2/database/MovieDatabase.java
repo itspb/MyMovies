@@ -1,4 +1,4 @@
-package com.example.android.mymovies2.Database;
+package com.example.android.mymovies2.database;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
