@@ -17,6 +17,7 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MoviesViewHolder> {
 
     private List<Movie> movies;
+//    private OnReachEndListener onReachEndListener;
 
     public MovieAdapter() {
         movies = new ArrayList<>();
@@ -31,6 +32,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MoviesViewHo
         notifyDataSetChanged();
     }
 
+//    public void setOnReachEndListener(OnReachEndListener onReachEndListener) {
+//        this.onReachEndListener = onReachEndListener;
+//    }
+//
+//    public interface OnReachEndListener {
+//        void onReachEnd();
+//    }
+
     @NonNull
     @Override
     public MoviesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -40,6 +49,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MoviesViewHo
 
     @Override
     public void onBindViewHolder(@NonNull MoviesViewHolder holder, int position) {
+//        if (position == movies.size() - 4 && onReachEndListener != null) {
+//            onReachEndListener.onReachEnd();
+//        }
         Movie movie = movies.get(position);
         Picasso.get().load(movie.getFullSmallPosterPath()).into(holder.imageViewSmallPoster);
     }

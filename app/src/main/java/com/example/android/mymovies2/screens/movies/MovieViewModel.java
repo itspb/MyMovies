@@ -77,17 +77,17 @@ public class MovieViewModel extends AndroidViewModel {
         }
     }
 
-    public void loadData() {
+    public void loadData(int page) {
         ApiFactory apiFactory = ApiFactory.getInstance();
         ApiService apiService = apiFactory.getApiService();
         compositeDisposable = new CompositeDisposable();
-        Disposable disposable = apiService.getMovies(API_KEY, LANGUAGE, SORT_BY_POPULARITY, 1)
+        Disposable disposable = apiService.getMovies(API_KEY, LANGUAGE, SORT_BY_POPULARITY, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<MovieResponse>() {
                     @Override
                     public void accept(MovieResponse movieResponse) throws Exception {
-                        deleteAllMovies();
+                        //deleteAllMovies();
                         insertMovies(movieResponse.getMovies());
                     }
                 }, new Consumer<Throwable>() {
