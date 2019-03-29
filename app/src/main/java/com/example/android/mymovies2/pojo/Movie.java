@@ -15,12 +15,13 @@ public class Movie {
     public static final String SMALL_POSTER_SIZE = "w185";
     public static final String BIG_POSTER_SIZE = "w780";
 
+    @PrimaryKey(autoGenerate = true)
+    private int uniqueId;
     @SerializedName("vote_count")
     @Expose
     private int voteCount;
     @SerializedName("id")
     @Expose
-    @PrimaryKey
     private int id;
     @SerializedName("video")
     @Expose
@@ -62,6 +63,14 @@ public class Movie {
 
     public String getFullBigPosterPath () {
         return BASE_POSTER_URL + BIG_POSTER_SIZE + posterPath;
+    }
+
+    public int getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(int uniqueId) {
+        this.uniqueId = uniqueId;
     }
 
     public int getVoteCount() {

@@ -29,11 +29,6 @@ public class MovieViewModel extends AndroidViewModel {
     private MutableLiveData<Throwable> errors;
     private CompositeDisposable compositeDisposable;
 
-
-    private static final String LANGUAGE = "ru-RU";
-    private static final String SORT_BY_POPULARITY = "popularity.desc";
-    private static final String SORT_BY_RATING = "vote_average.desc";
-
     public MovieViewModel(@NonNull Application application) {
         super(application);
         db = MovieDatabase.getInstance(application);
@@ -77,15 +72,15 @@ public class MovieViewModel extends AndroidViewModel {
         ApiFactory apiFactory = ApiFactory.getInstance();
         ApiService apiService = apiFactory.getApiService();
         compositeDisposable = new CompositeDisposable();
-        Disposable disposable = apiService.getMovies(Constants.API_KEY, LANGUAGE, SORT_BY_POPULARITY, page)
+        Disposable disposable = apiService.getMovies(Constants.API_KEY, Constants.LANGUAGE, Constants.SORT_BY_POPULARITY, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<MovieResponse>() {
                     @Override
                     public void accept(MovieResponse movieResponse) throws Exception {
-//                        if (page == 1) {
-//                            deleteAllMovies();
-//                        }
+                        if (page == 1) {
+                            deleteAllMovies();
+                        }
                         insertMovies(movieResponse.getMovies());
                     }
                 }, new Consumer<Throwable>() {
