@@ -3,18 +3,17 @@ package com.example.android.mymovies2.adapters;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-public abstract class EndlessRVScrollListener extends RecyclerView.OnScrollListener {
+public abstract class MyRVScrollListener extends RecyclerView.OnScrollListener {
 
     private int previousTotal = 0; // Общее кол-во фильмов после последней загрузки
     private boolean loading = true; // True если мы ждем загрузки данных
     private int visibleThreshold = 4; // Минимальное количество элементов, которое должно быть ниже текущей позиции прокрутки в RV, прежде чем загружать дальше.
-    int firstVisibleItem, visibleItemCount, totalItemCount;
-
+    private int firstVisibleItem, visibleItemCount, totalItemCount;
     private int currentPage = 1;
 
     private GridLayoutManager gridLayoutManager;
 
-    public EndlessRVScrollListener(GridLayoutManager gridLayoutManager) {
+    public MyRVScrollListener(GridLayoutManager gridLayoutManager) {
         this.gridLayoutManager = gridLayoutManager;
     }
 
@@ -34,7 +33,6 @@ public abstract class EndlessRVScrollListener extends RecyclerView.OnScrollListe
         }
         if (!loading && (totalItemCount - visibleItemCount)
                 <= (firstVisibleItem + visibleThreshold)) {
-
             currentPage++;
             onLoadMore(currentPage);
             loading = true;

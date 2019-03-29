@@ -4,14 +4,10 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
-import android.arch.paging.LivePagedListBuilder;
-import android.arch.paging.PagedList;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
-import com.example.android.mymovies2.BuildConfig;
-import com.example.android.mymovies2.Database.MovieDao;
+import com.example.android.mymovies2.Constants;
 import com.example.android.mymovies2.Database.MovieDatabase;
 import com.example.android.mymovies2.api.ApiFactory;
 import com.example.android.mymovies2.api.ApiService;
@@ -33,7 +29,7 @@ public class MovieViewModel extends AndroidViewModel {
     private MutableLiveData<Throwable> errors;
     private CompositeDisposable compositeDisposable;
 
-    private static final String API_KEY = BuildConfig.ApiKey;
+
     private static final String LANGUAGE = "ru-RU";
     private static final String SORT_BY_POPULARITY = "popularity.desc";
     private static final String SORT_BY_RATING = "vote_average.desc";
@@ -81,13 +77,15 @@ public class MovieViewModel extends AndroidViewModel {
         ApiFactory apiFactory = ApiFactory.getInstance();
         ApiService apiService = apiFactory.getApiService();
         compositeDisposable = new CompositeDisposable();
-        Disposable disposable = apiService.getMovies(API_KEY, LANGUAGE, SORT_BY_POPULARITY, page)
+        Disposable disposable = apiService.getMovies(Constants.API_KEY, LANGUAGE, SORT_BY_POPULARITY, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<MovieResponse>() {
                     @Override
                     public void accept(MovieResponse movieResponse) throws Exception {
-                        //deleteAllMovies();
+//                        if (page == 1) {
+//                            deleteAllMovies();
+//                        }
                         insertMovies(movieResponse.getMovies());
                     }
                 }, new Consumer<Throwable>() {
