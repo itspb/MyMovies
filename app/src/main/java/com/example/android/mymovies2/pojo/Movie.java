@@ -3,19 +3,16 @@ package com.example.android.mymovies2.pojo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import com.example.android.mymovies2.Constants;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import java.util.List;
 
 @Entity(tableName = "movies")
 public class Movie {
 
-    public static final String BASE_POSTER_URL = "https://image.tmdb.org/t/p/";
-    public static final String SMALL_POSTER_SIZE = "w185";
-    public static final String BIG_POSTER_SIZE = "w780";
-
     @PrimaryKey(autoGenerate = true)
+    @SerializedName("unique_id")
+    @Expose
     private int uniqueId;
     @SerializedName("vote_count")
     @Expose
@@ -58,16 +55,14 @@ public class Movie {
     private String releaseDate;
 
     public String getFullSmallPosterPath () {
-        return BASE_POSTER_URL + SMALL_POSTER_SIZE + posterPath;
+        return Constants.BASE_URL_POSTER + Constants.SMALL_POSTER_SIZE + posterPath;
     }
 
     public String getFullBigPosterPath () {
-        return BASE_POSTER_URL + BIG_POSTER_SIZE + posterPath;
+        return Constants.BASE_URL_POSTER + Constants.BIG_POSTER_SIZE + posterPath;
     }
 
-    public int getUniqueId() {
-        return uniqueId;
-    }
+    public int getUniqueId() { return uniqueId; }
 
     public void setUniqueId(int uniqueId) {
         this.uniqueId = uniqueId;

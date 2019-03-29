@@ -10,7 +10,7 @@ public abstract class MyRVScrollListener extends RecyclerView.OnScrollListener {
     private boolean loading = true; // True если мы ждем загрузки данных
     private int visibleThreshold = 4; // Минимальное количество элементов, которое должно быть ниже текущей позиции прокрутки в RV, прежде чем загружать дальше.
     private int firstVisibleItem, visibleItemCount, totalItemCount;
-    private int currentPage = 1;
+    private int currentPage;
 
     private GridLayoutManager gridLayoutManager;
 
@@ -30,6 +30,7 @@ public abstract class MyRVScrollListener extends RecyclerView.OnScrollListener {
         visibleItemCount = recyclerView.getChildCount(); // Число видимых элементов RecyclerView
         totalItemCount = gridLayoutManager.getItemCount(); // Количество элементов, привязанных к родительскому RecyclerView.
         firstVisibleItem = gridLayoutManager.findFirstVisibleItemPosition(); // Возвращает позицию адаптера на первом видимом View.
+        currentPage = totalItemCount / 20;
         if (dy > 0) {
             if (loading) {
                 if (totalItemCount > previousTotal) {
