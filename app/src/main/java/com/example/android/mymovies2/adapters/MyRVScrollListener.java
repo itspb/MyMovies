@@ -2,6 +2,7 @@ package com.example.android.mymovies2.adapters;
 
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 public abstract class MyRVScrollListener extends RecyclerView.OnScrollListener {
 
@@ -21,21 +22,26 @@ public abstract class MyRVScrollListener extends RecyclerView.OnScrollListener {
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
 
-        visibleItemCount = recyclerView.getChildCount();
-        totalItemCount = gridLayoutManager.getItemCount();
-        firstVisibleItem = gridLayoutManager.findFirstVisibleItemPosition();
-
-        if (loading) {
-            if (totalItemCount > previousTotal) {
-                loading = false;
-                previousTotal = totalItemCount;
+        Log.i("Scroll", "Page: " + currentPage +
+                        ", visibleItems: " + visibleItemCount +
+                        ", totalItems: " + totalItemCount +
+                        ", firstVisibleItem: " + firstVisibleItem +
+                        ", prevTotal: " + previousTotal);
+        visibleItemCount = recyclerView.getChildCount(); // Число видимых элементов RecyclerView
+        totalItemCount = gridLayoutManager.getItemCount(); // Количество элементов, привязанных к родительскому RecyclerView.
+        firstVisibleItem = gridLayoutManager.findFirstVisibleItemPosition(); // Возвращает позицию адаптера на первом видимом View.
+        if (dy > 0) {
+            if (loading) {
+                if (totalItemCount > previousTotal) {
+                    loading = false;
+                    previousTotal = totalItemCount;
+                }
             }
-        }
-        if (!loading && (totalItemCount - visibleItemCount)
-                <= (firstVisibleItem + visibleThreshold)) {
-            currentPage++;
-            onLoadMore(currentPage);
-            loading = true;
+            if (!loading && (totalItemCount - visibleItemCount <= (firstVisibleItem + visibleThreshold))) {
+                currentPage++;
+                onLoadMore(currentPage);
+                loading = true;
+            }
         }
     }
 

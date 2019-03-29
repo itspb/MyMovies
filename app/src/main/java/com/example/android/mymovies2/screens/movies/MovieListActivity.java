@@ -22,13 +22,6 @@ public class MovieListActivity extends AppCompatActivity {
     private MovieAdapter movieAdapter;
     private RecyclerView recyclerViewMovies;
 
-//    //For ScrollListener
-//    private int previousTotal = 0;
-//    private boolean loading = true;
-//    private int visibleThreshold = 4;
-//    private int firstVisibleItem, visibleItemCount, totalItemCount;
-//    private int page = 1;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,34 +45,8 @@ public class MovieListActivity extends AppCompatActivity {
         recyclerViewMovies.addOnScrollListener(new MyRVScrollListener(gridLayoutManager) {
             @Override
             public void onLoadMore(int currentPage) {
-                Toast.makeText(MovieListActivity.this, "Мы внизу", Toast.LENGTH_SHORT).show();
                 viewModel.loadData(currentPage);
             }
         });
-//        viewModel.loadData(page);
-//        recyclerViewMovies.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//
-//                visibleItemCount = recyclerViewMovies.getChildCount();
-//                totalItemCount = gridLayoutManager.getItemCount();
-//                firstVisibleItem = gridLayoutManager.findFirstVisibleItemPosition();
-//
-//                if (loading) {
-//                    if (totalItemCount > previousTotal) {
-//                        loading = false;
-//                        previousTotal = totalItemCount;
-//                    }
-//                }
-//                if (!loading && (totalItemCount - visibleItemCount)
-//                        <= (firstVisibleItem + visibleThreshold)) {
-//                    page++;
-//                    viewModel.loadData(page);
-//                    loading = true;
-//                }
-//            }
-//        });
-
     }
 }
