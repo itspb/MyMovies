@@ -78,9 +78,9 @@ public class MovieViewModel extends AndroidViewModel {
                 .subscribe(new Consumer<MovieResponse>() {
                     @Override
                     public void accept(MovieResponse movieResponse) throws Exception {
-//                        if (page == 1) {
-//                            deleteAllMovies();
-//                        }
+                        if (page == 1) {
+                            deleteAllMovies();
+                        }
                         insertMovies(movieResponse.getMovies());
                     }
                 }, new Consumer<Throwable>() {

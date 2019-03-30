@@ -1,12 +1,14 @@
 package com.example.android.mymovies2.screens.movies;
 
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.android.mymovies2.R;
@@ -45,8 +47,13 @@ public class MovieListActivity extends AppCompatActivity {
         recyclerViewMovies.addOnScrollListener(new MyRVScrollListener(gridLayoutManager) {
             @Override
             public void onLoadMore(int currentPage) {
+                Toast.makeText(MovieListActivity.this, "Конец списка", Toast.LENGTH_SHORT).show();
                 viewModel.loadData(currentPage);
             }
         });
+
     }
+
+
+
 }
