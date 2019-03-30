@@ -6,11 +6,8 @@ import android.util.Log;
 
 public abstract class MyRVScrollListener extends RecyclerView.OnScrollListener {
 
-    private int previousTotal = 0;
-    private boolean loading = true;
     private int visibleThreshold = 4; // Количество элементов, которое должно быть ниже текущей позиции прокрутки в RV, прежде чем загружать дальше.
     private int totalItemCount, lastVisibleItem;
-    private int currentPage = 1;
 
     private GridLayoutManager gridLayoutManager;
 
@@ -22,28 +19,15 @@ public abstract class MyRVScrollListener extends RecyclerView.OnScrollListener {
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
 
-        Log.i("Scroll", "Page: " + currentPage +
-                        ", totalItems: " + totalItemCount +
-                        ", lastVisibleItem: " + lastVisibleItem +
-                        ", loading: " + loading +
-                        ", prevTotal: " + previousTotal);
+        Log.i("Scroll", "totalItems: " + totalItemCount +
+                ", lastVisibleItem: " + lastVisibleItem);
         totalItemCount = gridLayoutManager.getItemCount(); // Количество элементов, привязанных к родительскому RecyclerView.
-        lastVisibleItem = gridLayoutManager.findLastCompletelyVisibleItemPosition(); // Позиция последнего видимого(целиком) элемента
-        //currentPage = totalItemCount / 20;
-        //if (dy > 0) { }
-        if (loading) {
-            if (totalItemCount > previousTotal) {
-                loading = false;
-                previousTotal = totalItemCount;
-            }
-        }
-        if (!loading && (totalItemCount <= (lastVisibleItem + visibleThreshold))) {
-            currentPage++;
-            onLoadMore(currentPage);
-            loading = true;
+        lastVisibleItem = gridLayoutManager.findLastVisibleItemPosition(); // Позиция последнего видимого элемента
+        if (totalItemCount <= (lastVisibleItem + visibleThreshold)) {
+            onLoadMore();
         }
     }
 
-    public abstract void onLoadMore(int currentPage);
+    public abstract void onLoadMore();
 
 }

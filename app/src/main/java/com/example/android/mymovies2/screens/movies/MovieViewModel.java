@@ -33,6 +33,7 @@ public class MovieViewModel extends AndroidViewModel {
         super(application);
         db = MovieDatabase.getInstance(application);
         movies = db.movieDao().getAllMovies();
+        compositeDisposable = new CompositeDisposable();
     }
 
     public LiveData<List<Movie>> getMovies() {
@@ -71,7 +72,6 @@ public class MovieViewModel extends AndroidViewModel {
     public void loadData(int page) {
         ApiFactory apiFactory = ApiFactory.getInstance();
         ApiService apiService = apiFactory.getApiService();
-        compositeDisposable = new CompositeDisposable();
         Disposable disposable = apiService.getMovies(Constants.API_KEY, Constants.LANGUAGE, Constants.SORT_BY_POPULARITY, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

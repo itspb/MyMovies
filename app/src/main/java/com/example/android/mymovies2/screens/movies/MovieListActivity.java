@@ -24,6 +24,9 @@ public class MovieListActivity extends AppCompatActivity {
     private MovieAdapter movieAdapter;
     private RecyclerView recyclerViewMovies;
 
+    private boolean isLoading = false;
+    private int page = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,15 +43,20 @@ public class MovieListActivity extends AppCompatActivity {
             public void onChanged(@Nullable List<Movie> movies) {
                 if (movies != null) {
                     movieAdapter.setMovies(movies);
+                    isLoading = false;
                 }
             }
         });
-        viewModel.loadData(1);
+        viewModel.loadData(page++);
         recyclerViewMovies.addOnScrollListener(new MyRVScrollListener(gridLayoutManager) {
             @Override
-            public void onLoadMore(int currentPage) {
-                Toast.makeText(MovieListActivity.this, "Конец списка", Toast.LENGTH_SHORT).show();
-                viewModel.loadData(currentPage);
+            public void onLoadMore() {
+                if (!isLoading) {
+                    Toast.makeText(MovieListActivity.this, "Конец списка", Toast.LENGTH_SHORT).show();
+                    Log.i("Scroll", "page: " + page);
+                    isLoading = true;
+                    viewModel.loadData(page++);
+                }
             }
         });
 
