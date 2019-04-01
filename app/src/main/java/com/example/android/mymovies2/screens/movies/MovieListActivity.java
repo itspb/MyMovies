@@ -35,8 +35,8 @@ public class MovieListActivity extends AppCompatActivity {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         recyclerViewMovies.setLayoutManager(gridLayoutManager);
         movieAdapter = new MovieAdapter();
-        recyclerViewMovies.setAdapter(movieAdapter);
         recyclerViewMovies.setHasFixedSize(true);
+        recyclerViewMovies.setAdapter(movieAdapter);
         viewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
         viewModel.getMovies().observe(this, new Observer<List<Movie>>() {
             @Override
@@ -52,7 +52,6 @@ public class MovieListActivity extends AppCompatActivity {
             @Override
             public void onLoadMore() {
                 if (!isLoading) {
-                    Toast.makeText(MovieListActivity.this, "Конец списка", Toast.LENGTH_SHORT).show();
                     Log.i("Scroll", "page: " + page);
                     isLoading = true;
                     viewModel.loadData(page++);

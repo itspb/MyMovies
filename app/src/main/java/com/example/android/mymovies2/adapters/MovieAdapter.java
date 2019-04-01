@@ -3,6 +3,7 @@ package com.example.android.mymovies2.adapters;
 import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import android.widget.ImageView;
 
 import com.example.android.mymovies2.R;
 import com.example.android.mymovies2.pojo.Movie;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -46,7 +49,21 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MoviesViewHo
     @Override
     public void onBindViewHolder(@NonNull MoviesViewHolder holder, int position) {
         Movie movie = movies.get(position);
-        Picasso.get().load(movie.getFullSmallPosterPath()).into(holder.imageViewSmallPoster);
+        Picasso.get()
+                .load(movie.getFullSmallPosterPath())
+                .networkPolicy(NetworkPolicy.OFFLINE)
+                .into(holder.imageViewSmallPoster, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Log.i("Picasso", "Image from cache");
+                        }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Picasso.get().load(movie.getFullSmallPosterPath()).into(holder.imageViewSmallPoster);
+                        Log.i("Picasso", "Image from internet");
+                    }
+                });
     }
 
     @Override

@@ -6,7 +6,7 @@ import android.util.Log;
 
 public abstract class MyRVScrollListener extends RecyclerView.OnScrollListener {
 
-    private int visibleThreshold = 4; // Количество элементов, которое должно быть ниже текущей позиции прокрутки в RV, прежде чем загружать дальше.
+    private int visibleThreshold = 6; // Количество элементов, которое должно быть ниже текущей позиции прокрутки в RV, прежде чем загружать дальше.
     private int totalItemCount, lastVisibleItem;
 
     private GridLayoutManager gridLayoutManager;
