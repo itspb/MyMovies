@@ -1,8 +1,6 @@
 package com.example.android.mymovies2.screens.movies;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +8,8 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Toast;
 
@@ -19,7 +19,6 @@ import com.example.android.mymovies2.adapters.MyRVScrollListener;
 import com.example.android.mymovies2.pojo.Movie;
 
 import java.util.List;
-import java.util.Objects;
 
 public class MovieListActivity extends AppCompatActivity {
 
@@ -63,6 +62,15 @@ public class MovieListActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
 
     private View.OnClickListener onItemClickListener = new View.OnClickListener() {
         @Override

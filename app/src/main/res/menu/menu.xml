@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:title="Главная" android:id="@+id/menuItemMain"/>
+    <item android:title="Избранное" android:id="@+id/menuItemFavorite"/>
+    <item android:id="@+id/filter_options_icon"
+        android:title="filter"
+        android:icon="@drawable/filter_icon"
+        app:showAsAction="always">
+        <menu>
+            <item android:title="Популярные" android:id="@+id/menuItemPopular"/>
+            <item android:title="По рейтингу" android:id="@+id/menuItemRating"/>
+        </menu>
+    </item>
+
+</menu>
