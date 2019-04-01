@@ -1,6 +1,7 @@
 package com.example.android.mymovies2.adapters;
 
 import android.support.annotation.NonNull;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,9 +27,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MoviesViewHo
         return movies;
     }
 
-    public void setMovies(List<Movie> movies) {
-        this.movies = movies;
-        notifyDataSetChanged();
+    public void updateMoviesListItems(List<Movie> movies) {
+        final MoviesDiffCallback diffCallback = new MoviesDiffCallback(this.movies, movies);
+        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+
+        this.movies.clear();
+        this.movies.addAll(movies);
+        diffResult.dispatchUpdatesTo(this);
     }
 
     @NonNull

@@ -36,13 +36,13 @@ public class MovieListActivity extends AppCompatActivity {
         recyclerViewMovies.setLayoutManager(gridLayoutManager);
         movieAdapter = new MovieAdapter();
         recyclerViewMovies.setAdapter(movieAdapter);
-
+        recyclerViewMovies.setHasFixedSize(true);
         viewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
         viewModel.getMovies().observe(this, new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> movies) {
                 if (movies != null) {
-                    movieAdapter.setMovies(movies);
+                    movieAdapter.updateMoviesListItems(movies);
                     isLoading = false;
                 }
             }
