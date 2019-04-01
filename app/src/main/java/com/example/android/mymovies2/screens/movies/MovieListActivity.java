@@ -1,5 +1,6 @@
 package com.example.android.mymovies2.screens.movies;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.android.mymovies2.R;
@@ -17,6 +19,7 @@ import com.example.android.mymovies2.adapters.MyRVScrollListener;
 import com.example.android.mymovies2.pojo.Movie;
 
 import java.util.List;
+import java.util.Objects;
 
 public class MovieListActivity extends AppCompatActivity {
 
@@ -37,6 +40,7 @@ public class MovieListActivity extends AppCompatActivity {
         movieAdapter = new MovieAdapter();
         recyclerViewMovies.setHasFixedSize(true);
         recyclerViewMovies.setAdapter(movieAdapter);
+        movieAdapter.setOnItemClickListener(onItemClickListener);
         viewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
         viewModel.getMovies().observe(this, new Observer<List<Movie>>() {
             @Override
@@ -58,9 +62,15 @@ public class MovieListActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
-
-
+    private View.OnClickListener onItemClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            RecyclerView.ViewHolder viewHolder = (RecyclerView.ViewHolder) v.getTag();
+            int position = viewHolder.getAdapterPosition();
+            Movie movie = movieAdapter.getMovies().get(position);
+            Toast.makeText(MovieListActivity.this, "You Clicked: " + movie.getTitle(), Toast.LENGTH_SHORT).show();
+        }
+    };
 }
