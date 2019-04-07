@@ -6,12 +6,12 @@ import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ApiFactory {
-    private static ApiFactory apiFactory;
+public class ApiMovieFactory {
+    private static ApiMovieFactory apiMovieFactory;
     private static Retrofit retrofit;
 
 
-    private ApiFactory() {
+    private ApiMovieFactory() {
         retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())         // конвертер json
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())  // используем rxjava для отслеживания процесса получения данных
@@ -20,11 +20,11 @@ public class ApiFactory {
 
     };
 
-    public static ApiFactory getInstance() {
-        if (apiFactory == null) {
-            apiFactory = new ApiFactory();
+    public static ApiMovieFactory getInstance() {
+        if (apiMovieFactory == null) {
+            apiMovieFactory = new ApiMovieFactory();
         }
-        return apiFactory;
+        return apiMovieFactory;
     }
 
     public ApiService getApiService() {

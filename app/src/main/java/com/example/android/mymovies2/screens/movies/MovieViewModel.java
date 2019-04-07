@@ -9,10 +9,12 @@ import android.support.annotation.NonNull;
 
 import com.example.android.mymovies2.Constants;
 import com.example.android.mymovies2.Database.MovieDatabase;
-import com.example.android.mymovies2.api.ApiFactory;
+import com.example.android.mymovies2.api.ApiMovieFactory;
+import com.example.android.mymovies2.api.ApiSearchFactory;
 import com.example.android.mymovies2.api.ApiService;
 import com.example.android.mymovies2.pojo.Movie;
 import com.example.android.mymovies2.pojo.MovieResponse;
+import com.example.android.mymovies2.pojo.SearchResponse;
 
 import java.util.List;
 
@@ -70,8 +72,8 @@ public class MovieViewModel extends AndroidViewModel {
     }
 
     public void loadData(int page) {
-        ApiFactory apiFactory = ApiFactory.getInstance();
-        ApiService apiService = apiFactory.getApiService();
+        ApiMovieFactory apiMovieFactory = ApiMovieFactory.getInstance();
+        ApiService apiService = apiMovieFactory.getApiService();
         Disposable disposable = apiService.getMovies(Constants.API_KEY, Constants.LANGUAGE, Constants.SORT_BY_POPULARITY, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

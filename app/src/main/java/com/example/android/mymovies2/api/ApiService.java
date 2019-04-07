@@ -3,6 +3,7 @@ package com.example.android.mymovies2.api;
 import com.example.android.mymovies2.BuildConfig;
 import com.example.android.mymovies2.Constants;
 import com.example.android.mymovies2.pojo.MovieResponse;
+import com.example.android.mymovies2.pojo.SearchResponse;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
@@ -16,4 +17,9 @@ public interface ApiService {
                                         @Query("language") String language,
                                         @Query("sort_by") String sortBy,
                                         @Query("page") int page);
+
+    @GET("multi?")
+    Observable<SearchResponse> getSearchResults(@Query("api_key") String apiKey,
+                                                @Query("language") String language,
+                                                @Query("query") String searchQuery);
 }
