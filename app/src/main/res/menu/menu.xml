@@ -10,7 +10,7 @@
     <item android:title="Избранное" android:id="@+id/menuItemFavorite"/>
     <item android:id="@+id/filter_options_icon"
         android:title="filter"
-        android:icon="@drawable/filter_icon"
+        android:icon="@drawable/filter_icon_white"
         app:showAsAction="always">
         <menu>
             <item android:title="Популярные" android:id="@+id/menuItemPopular"/>

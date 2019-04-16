@@ -47,7 +47,6 @@ public class SearchViewModel extends AndroidViewModel {
                     @Override
                     public void accept(SearchResponse searchResponse) throws Exception {
                         searchResults.setValue(searchResponse.getResults());
-                        Log.i("Search", "accept in doSearch triggered!");
                     }
                 }, new Consumer<Throwable>() {
                     @Override

@@ -1,12 +1,16 @@
 package com.example.android.mymovies2.screens.movies;
 
-import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.SearchManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.graphics.Color;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.os.CountDownTimer;
+import android.provider.BaseColumns;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,13 +18,11 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
+import android.support.v4.widget.CursorAdapter;
+import android.support.v4.widget.SimpleCursorAdapter;
 
 import com.example.android.mymovies2.R;
 import com.example.android.mymovies2.adapters.MovieAdapter;
@@ -37,6 +39,8 @@ public class MovieListActivity extends AppCompatActivity {
     private MovieAdapter movieAdapter;
     private RecyclerView recyclerViewMovies;
     private SearchViewModel searchViewModel;
+    private ArrayList<String> searchResultsList;
+    private CursorAdapter cursorAdapter;
 
     private boolean isLoading = false;
     private int page = 1;
@@ -75,85 +79,6 @@ public class MovieListActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu, menu);
-        MenuItem searchMenu = menu.findItem(R.id.menuSearch);
-        SearchView searchView = (SearchView) searchMenu.getActionView();
-
-        // Get SearchView autocomplete object.
-        final SearchView.SearchAutoComplete searchAutoComplete = (SearchView.SearchAutoComplete)searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        searchAutoComplete.setBackgroundColor(Color.BLACK);
-        searchAutoComplete.setTextColor(Color.WHITE);
-        searchAutoComplete.setDropDownBackgroundResource(android.R.color.holo_blue_light);
-
-        ArrayList<String> searchResultsList = new ArrayList<>();
-        ArrayAdapter<String> searchAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, searchResultsList);
-        searchAutoComplete.setAdapter(searchAdapter);
-        searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
-        searchViewModel.getSearchResults().observe(this, new Observer<List<SearchResult>>() {
-            @Override
-            public void onChanged(@Nullable List<SearchResult> searchResults) {
-                if (searchResults != null) {
-                    Log.i("Search", "onChanged IF triggered");
-                    searchResultsList.clear();
-                    for (SearchResult result : searchResults) {
-                        searchResultsList.add((result.getMediaType().equals("movie")) ? result.getTitle() : result.getName());
-                    }
-                    Log.i("Search", searchResultsList.toString());
-
-
-                    searchAdapter.addAll(searchResultsList);
-                    Log.i("Search", "Count before: " + searchAdapter.getCount());
-                    searchAdapter.notifyDataSetChanged();
-                    Log.i("Search", "Count after: " + searchAdapter.getCount());
-
-                }
-            }
-        });
-
-
-        // Listen to search view item on click event.
-//        searchAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int itemIndex, long id) {
-//                String queryString=(String)adapterView.getItemAtPosition(itemIndex);
-//                searchAutoComplete.setText("" + queryString);
-//                Toast.makeText(MovieListActivity.this, "you clicked " + queryString, Toast.LENGTH_LONG).show();
-//            }
-//        });
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (newText.length() > 3) {
-                    new CountDownTimer(5000, 5000) {
-                        @Override
-                        public void onTick(long millisUntilFinished) {
-                        }
-
-                        @Override
-                        public void onFinish() {
-                            Log.i("Search", "doSearch triggered");
-                            searchViewModel.doSearch(newText);
-                        }
-
-                    }.start();
-                }
-                return true;
-            }
-        });
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
     private View.OnClickListener onItemClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -163,4 +88,103 @@ public class MovieListActivity extends AppCompatActivity {
             Toast.makeText(MovieListActivity.this, "You Clicked: " + movie.getTitle(), Toast.LENGTH_SHORT).show();
         }
     };
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        Activity activity = this;
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.menuSearch));
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setQueryHint("Search for Movies...");
+        AutoCompleteTextView searchAutoCompleteTextView = (AutoCompleteTextView) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchAutoCompleteTextView.setThreshold(3);
+        String [] columNames = { SearchManager.SUGGEST_COLUMN_TEXT_1 };
+        int [] viewIds = { android.R.id.text1 };
+        cursorAdapter = new SimpleCursorAdapter(this, R.layout.query_suggestion, null, columNames, viewIds);
+
+        searchView.setSuggestionsAdapter(cursorAdapter);
+        searchView.setOnSuggestionListener(getOnSuggestionClickListener());
+        searchView.setOnQueryTextListener(getOnQueryTextListener(activity, cursorAdapter));
+        searchView.setIconifiedByDefault(false);
+
+        searchResultsList = new ArrayList<>();
+        searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
+        searchViewModel.getSearchResults().observe(this, new Observer<List<SearchResult>>() {
+            @Override
+            public void onChanged(@Nullable List<SearchResult> searchResults) {
+                if (searchResults != null) {
+                    searchResultsList.clear();
+                    for (SearchResult result : searchResults) {
+                        searchResultsList.add((result.getMediaType().equals("movie")) ? result.getTitle() : result.getName());
+                    }
+                    Cursor cursor = createCursorFromResult(searchResultsList);
+                    cursorAdapter.swapCursor(cursor);
+                }
+            }
+        });
+
+        return true;
+    }
+
+    private SearchView.OnQueryTextListener getOnQueryTextListener(Activity activity, CursorAdapter adapter) {
+        return new SearchView.OnQueryTextListener() {
+
+            private int waitingTime = 1000;
+            private CountDownTimer timer;
+
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                // TODO: clear cursorAdapter in a better way
+                cursorAdapter.swapCursor(new MatrixCursor(new String[]{ BaseColumns._ID, SearchManager.SUGGEST_COLUMN_TEXT_1 }));
+                if (s.length() > 2) {
+                    if(timer != null){
+                        timer.cancel();
+                    }
+                    timer = new CountDownTimer(waitingTime, 1000) {
+                        public void onTick(long millisUntilFinished) {
+                        }
+
+                        public void onFinish() {
+                            searchViewModel.doSearch(s);
+                        }
+                    };
+                    timer.start();
+                }
+                return false;
+            }
+        };
+    }
+
+     private SearchView.OnSuggestionListener getOnSuggestionClickListener() {
+        return new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionSelect(int i) {
+                return false;
+            }
+
+            @Override
+            public boolean onSuggestionClick(int index) {
+                // TODO: handle suggestion item click
+                return true;
+            }
+        };
+    }
+
+
+    private Cursor createCursorFromResult(ArrayList<String> searchResultsList)  {
+        String[] menuCols = new String[] { BaseColumns._ID, SearchManager.SUGGEST_COLUMN_TEXT_1 };
+        MatrixCursor cursor = new MatrixCursor(menuCols);
+        int counter = 0;
+        for (String s : searchResultsList) {
+            cursor.addRow(new Object[] { counter, s});
+            counter++;
+        }
+        return cursor;
+    }
 }
