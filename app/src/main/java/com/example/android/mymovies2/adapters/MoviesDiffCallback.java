@@ -35,6 +35,8 @@ public class MoviesDiffCallback extends DiffUtil.Callback {
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
         final Movie oldMovie = oldMoviesList.get(oldItemPosition);
         final Movie newMovie = newMoviesList.get(newItemPosition);
+        // TODO Fix the problem with null posters
+        if (oldMovie.getPosterPath() == null) return true;
         return oldMovie.getPosterPath().equals(newMovie.getPosterPath());
     }
 }

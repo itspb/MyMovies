@@ -8,16 +8,12 @@ import java.util.List;
 public class SearchResult {
 
     @SerializedName("id")
-    @Expose
     private int id;
     @SerializedName("media_type")
-    @Expose
     private String mediaType;
     @SerializedName("title")
-    @Expose
     private String title;
     @SerializedName("name") // name is title for TV show.
-    @Expose
     private String name;
 
     public int getId() {

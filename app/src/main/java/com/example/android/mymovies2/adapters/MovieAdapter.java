@@ -16,6 +16,7 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MoviesViewHolder> {
@@ -24,7 +25,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MoviesViewHo
     private View.OnClickListener onClickListener;
 
     public MovieAdapter() {
-        movies = new ArrayList<>();
+        movies = Collections.emptyList();
     }
 
     public List<Movie> getMovies() {
@@ -35,8 +36,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MoviesViewHo
         final MoviesDiffCallback diffCallback = new MoviesDiffCallback(this.movies, movies);
         final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
-        this.movies.clear();
-        this.movies.addAll(movies);
+        this.movies = movies;
         diffResult.dispatchUpdatesTo(this);
     }
 
@@ -57,7 +57,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MoviesViewHo
                     @Override
                     public void onSuccess() {
                         Log.i("Picasso", "Image from cache");
-                        }
+                    }
 
                     @Override
                     public void onError(Exception e) {

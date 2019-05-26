@@ -178,7 +178,7 @@ public class MovieListActivity extends AppCompatActivity {
 
 
     private Cursor createCursorFromResult(ArrayList<String> searchResultsList)  {
-        String[] menuCols = new String[] { BaseColumns._ID, SearchManager.SUGGEST_COLUMN_TEXT_1 };
+        String[] menuCols = { BaseColumns._ID, SearchManager.SUGGEST_COLUMN_TEXT_1 };
         MatrixCursor cursor = new MatrixCursor(menuCols);
         int counter = 0;
         for (String s : searchResultsList) {

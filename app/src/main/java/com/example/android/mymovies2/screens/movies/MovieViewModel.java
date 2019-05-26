@@ -48,11 +48,10 @@ public class MovieViewModel extends AndroidViewModel {
     }
 
     private void deleteAllMovies() {
-        new DeleteAllMoviesTask().execute();
+        AsyncTask.execute(new DeleteAllMoviesTask());
     }
 
     private static class InsertMoviesTask extends AsyncTask<List<Movie>, Void, Void> {
-
         @Override
         protected Void doInBackground(List<Movie>... lists) {
             if (lists != null && lists.length > 0) {
@@ -62,12 +61,10 @@ public class MovieViewModel extends AndroidViewModel {
         }
     }
 
-    private static class DeleteAllMoviesTask extends AsyncTask<Void, Void, Void> {
-
+    private static class DeleteAllMoviesTask implements Runnable {
         @Override
-        protected Void doInBackground(Void... voids) {
+        public void run() {
             db.movieDao().deleteAllMovies();
-            return null;
         }
     }
 
