@@ -7,22 +7,23 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.BaseColumns;
 import android.support.annotation.Nullable;
-import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.CursorAdapter;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
-import android.support.v4.widget.CursorAdapter;
-import android.support.v4.widget.SimpleCursorAdapter;
 
 import com.example.android.mymovies2.R;
 import com.example.android.mymovies2.adapters.MovieAdapter;
@@ -41,6 +42,8 @@ public class MovieListActivity extends AppCompatActivity {
     private SearchViewModel searchViewModel;
     private ArrayList<String> searchResultsList;
     private CursorAdapter cursorAdapter;
+    private ProgressBar progressBarSearching;
+    private ProgressBar progressBarLoading;
 
     private boolean isLoading = false;
     private int page = 1;
@@ -49,7 +52,12 @@ public class MovieListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_list_activity);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         recyclerViewMovies = findViewById(R.id.recyclerViewMovies);
+        progressBarSearching = findViewById(R.id.progressBarSearching);
+        progressBarLoading = findViewById(R.id.progressBarLoading);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         recyclerViewMovies.setLayoutManager(gridLayoutManager);
         movieAdapter = new MovieAdapter();
@@ -62,6 +70,7 @@ public class MovieListActivity extends AppCompatActivity {
             public void onChanged(@Nullable List<Movie> movies) {
                 if (movies != null) {
                     movieAdapter.updateMoviesListItems(movies);
+                    progressBarLoading.setVisibility(View.INVISIBLE);
                     isLoading = false;
                 }
             }
@@ -72,6 +81,7 @@ public class MovieListActivity extends AppCompatActivity {
             public void onLoadMore() {
                 if (!isLoading) {
                     Log.i("Scroll", "page: " + page);
+                    progressBarLoading.setVisibility(View.VISIBLE);
                     isLoading = true;
                     movieViewModel.loadData(page++);
                 }
@@ -94,11 +104,10 @@ public class MovieListActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu, menu);
         Activity activity = this;
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.menuSearch));
+        SearchView searchView = findViewById(R.id.menuSearch);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setQueryHint("Search for Movies...");
         AutoCompleteTextView searchAutoCompleteTextView = (AutoCompleteTextView) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        searchAutoCompleteTextView.setThreshold(3);
+        searchAutoCompleteTextView.setThreshold(2);
         String [] columNames = { SearchManager.SUGGEST_COLUMN_TEXT_1 };
         int [] viewIds = { android.R.id.text1 };
         cursorAdapter = new SimpleCursorAdapter(this, R.layout.query_suggestion, null, columNames, viewIds);
@@ -107,6 +116,13 @@ public class MovieListActivity extends AppCompatActivity {
         searchView.setOnSuggestionListener(getOnSuggestionClickListener());
         searchView.setOnQueryTextListener(getOnQueryTextListener(activity, cursorAdapter));
         searchView.setIconifiedByDefault(false);
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                progressBarSearching.setVisibility(View.INVISIBLE);
+                return false;
+            }
+        });
 
         searchResultsList = new ArrayList<>();
         searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
@@ -120,6 +136,7 @@ public class MovieListActivity extends AppCompatActivity {
                     }
                     Cursor cursor = createCursorFromResult(searchResultsList);
                     cursorAdapter.swapCursor(cursor);
+                    progressBarSearching.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -142,11 +159,13 @@ public class MovieListActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String s) {
                 // TODO: clear cursorAdapter in a better way
                 cursorAdapter.swapCursor(new MatrixCursor(new String[]{ BaseColumns._ID, SearchManager.SUGGEST_COLUMN_TEXT_1 }));
-                if (s.length() > 2) {
+                if (s.isEmpty()) progressBarSearching.setVisibility(View.INVISIBLE);
+                if (s.length() > 0) {
+                    progressBarSearching.setVisibility(View.VISIBLE);
                     if(timer != null){
                         timer.cancel();
                     }
-                    timer = new CountDownTimer(waitingTime, 1000) {
+                    timer = new CountDownTimer(waitingTime, 500) {
                         public void onTick(long millisUntilFinished) {
                         }
 
@@ -156,7 +175,7 @@ public class MovieListActivity extends AppCompatActivity {
                     };
                     timer.start();
                 }
-                return false;
+               return false;
             }
         };
     }
