@@ -14,90 +14,40 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.example.android.mymovies2.R;
-import com.example.android.mymovies2.adapters.MovieAdapter;
-import com.example.android.mymovies2.adapters.MyRVScrollListener;
-import com.example.android.mymovies2.pojo.Movie;
 import com.example.android.mymovies2.pojo.SearchResult;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MovieListActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MovieListFragment.OnFragmentInteractionListener {
 
-    private MovieViewModel movieViewModel;
-    private MovieAdapter movieAdapter;
-    private RecyclerView recyclerViewMovies;
     private SearchViewModel searchViewModel;
     private ArrayList<String> searchResultsList;
     private CursorAdapter cursorAdapter;
     private ProgressBar progressBarSearching;
     private ProgressBar progressBarLoading;
 
-    private boolean isLoading = false;
-    private int page = 1;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_list_activity);
+        MovieListFragment movieListFragment = MovieListFragment.newInstance();
+        getSupportFragmentManager().beginTransaction().add(R.id.activityMainFrame, movieListFragment).commit();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        recyclerViewMovies = findViewById(R.id.recyclerViewMovies);
         progressBarSearching = findViewById(R.id.progressBarSearching);
         progressBarLoading = findViewById(R.id.progressBarLoading);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
-        recyclerViewMovies.setLayoutManager(gridLayoutManager);
-        movieAdapter = new MovieAdapter();
-        recyclerViewMovies.setHasFixedSize(true);
-        recyclerViewMovies.setAdapter(movieAdapter);
-        movieAdapter.setOnItemClickListener(onItemClickListener);
-        movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
-        movieViewModel.getMovies().observe(this, new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> movies) {
-                if (movies != null) {
-                    movieAdapter.updateMoviesListItems(movies);
-                    progressBarLoading.setVisibility(View.INVISIBLE);
-                    isLoading = false;
-                }
-            }
-        });
-        movieViewModel.loadData(page++);
-        recyclerViewMovies.addOnScrollListener(new MyRVScrollListener(gridLayoutManager) {
-            @Override
-            public void onLoadMore() {
-                if (!isLoading) {
-                    Log.i("Scroll", "page: " + page);
-                    progressBarLoading.setVisibility(View.VISIBLE);
-                    isLoading = true;
-                    movieViewModel.loadData(page++);
-                }
-            }
-        });
     }
 
-    private View.OnClickListener onItemClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            RecyclerView.ViewHolder viewHolder = (RecyclerView.ViewHolder) v.getTag();
-            int position = viewHolder.getAdapterPosition();
-            Movie movie = movieAdapter.getMovies().get(position);
-            Toast.makeText(MovieListActivity.this, "You Clicked: " + movie.getTitle(), Toast.LENGTH_SHORT).show();
-        }
-    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -205,5 +155,12 @@ public class MovieListActivity extends AppCompatActivity {
             counter++;
         }
         return cursor;
+    }
+
+
+    @Override
+    public void setProgressbarLoadingVisibility(boolean isVisible) {
+        if (isVisible) progressBarLoading.setVisibility(View.VISIBLE);
+        else progressBarLoading.setVisibility(View.INVISIBLE);
     }
 }

@@ -10,11 +10,9 @@ import android.support.annotation.NonNull;
 import com.example.android.mymovies2.Constants;
 import com.example.android.mymovies2.Database.MovieDatabase;
 import com.example.android.mymovies2.api.ApiMovieFactory;
-import com.example.android.mymovies2.api.ApiSearchFactory;
 import com.example.android.mymovies2.api.ApiService;
 import com.example.android.mymovies2.pojo.Movie;
 import com.example.android.mymovies2.pojo.MovieResponse;
-import com.example.android.mymovies2.pojo.SearchResponse;
 
 import java.util.List;
 
@@ -24,14 +22,14 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-public class MovieViewModel extends AndroidViewModel {
+public class MovieListViewModel extends AndroidViewModel {
 
     private static MovieDatabase db;
     private LiveData<List<Movie>> movies;
     private MutableLiveData<Throwable> errors;
     private CompositeDisposable compositeDisposable;
 
-    public MovieViewModel(@NonNull Application application) {
+    public MovieListViewModel(@NonNull Application application) {
         super(application);
         db = MovieDatabase.getInstance(application);
         movies = db.movieDao().getAllMovies();

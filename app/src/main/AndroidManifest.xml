@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".screens.movies.MovieListActivity">
+        <activity android:name=".screens.movies.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
