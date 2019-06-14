@@ -50,6 +50,7 @@
         android:textColor="#ffffff"
         app:layout_constraintStart_toStartOf="@+id/guidelineVertical"
         app:layout_constraintTop_toBottomOf="@id/textViewTitle"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:text="Оригинальное название" />
 
     <TextView
@@ -62,6 +63,7 @@
         android:textColor="#ffffff"
         app:layout_constraintStart_toStartOf="@+id/guidelineVertical"
         app:layout_constraintTop_toBottomOf="@+id/textViewOriginalTitle"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:text="7.4" />
 
     <TextView
@@ -74,6 +76,7 @@
         android:textColor="#ffffff"
         app:layout_constraintStart_toStartOf="@+id/guidelineVertical"
         app:layout_constraintTop_toBottomOf="@+id/textViewRating"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:text="13-04-1990" />
 
     <TextView
@@ -86,6 +89,7 @@
         android:textColor="#ffffff"
         app:layout_constraintStart_toStartOf="@+id/guidelineVertical"
         app:layout_constraintTop_toBottomOf="@+id/textViewReleaseDate"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:text="Статус" />
 
     <Button
