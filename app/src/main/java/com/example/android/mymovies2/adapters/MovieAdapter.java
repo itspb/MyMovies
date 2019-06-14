@@ -15,7 +15,6 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,7 +42,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MoviesViewHo
     @NonNull
     @Override
     public MoviesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_movie, parent, false);
         return new MoviesViewHolder(view);
     }
 

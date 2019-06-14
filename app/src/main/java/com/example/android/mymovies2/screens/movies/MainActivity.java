@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.BaseColumns;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
@@ -38,9 +39,13 @@ public class MainActivity extends AppCompatActivity implements MovieListFragment
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.movie_list_activity);
+        setContentView(R.layout.activity_main);
+        FragmentManager fragmentManager = getSupportFragmentManager();
         MovieListFragment movieListFragment = MovieListFragment.newInstance();
-        getSupportFragmentManager().beginTransaction().add(R.id.activityMainFrame, movieListFragment).commit();
+        fragmentManager.beginTransaction()
+                .add(R.id.activityMainFrame, movieListFragment, "fragment_movie_list")
+                .commit();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -163,4 +168,5 @@ public class MainActivity extends AppCompatActivity implements MovieListFragment
         if (isVisible) progressBarLoading.setVisibility(View.VISIBLE);
         else progressBarLoading.setVisibility(View.INVISIBLE);
     }
+
 }

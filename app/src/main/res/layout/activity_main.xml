@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".screens.movies.MainActivity">
+    tools:context=".screens.movies.MainActivity"
+    android:background="@android:color/black">
 
     <FrameLayout
         android:id="@+id/activityMainFrame"
@@ -38,7 +39,9 @@
             android:id="@+id/menuSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:queryHint="Search for Movies...">
+            app:queryHint="Search for Movies..."
+            android:focusable="false"
+            android:focusableInTouchMode="true">
 
         </android.support.v7.widget.SearchView>
 

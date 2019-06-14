@@ -15,6 +15,7 @@ import com.example.android.mymovies2.pojo.Movie;
 import com.example.android.mymovies2.pojo.MovieResponse;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -22,14 +23,14 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-public class MovieListViewModel extends AndroidViewModel {
+public class MovieViewModel extends AndroidViewModel {
 
     private static MovieDatabase db;
     private LiveData<List<Movie>> movies;
     private MutableLiveData<Throwable> errors;
     private CompositeDisposable compositeDisposable;
 
-    public MovieListViewModel(@NonNull Application application) {
+    public MovieViewModel(@NonNull Application application) {
         super(application);
         db = MovieDatabase.getInstance(application);
         movies = db.movieDao().getAllMovies();
@@ -90,6 +91,28 @@ public class MovieListViewModel extends AndroidViewModel {
     protected void onCleared() {
         compositeDisposable.dispose();
         super.onCleared();
+    }
+
+    public Movie getMovieById(int id) {
+        try {
+            return new GetMovieTask().execute(id).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static class GetMovieTask extends AsyncTask<Integer, Void, Movie> {
+
+        @Override
+        protected Movie doInBackground(Integer... integers) {
+            if (integers != null && integers.length > 0) {
+                return db.movieDao().getMovieById(integers[0]);
+            }
+            return null;
+        }
     }
 }
 

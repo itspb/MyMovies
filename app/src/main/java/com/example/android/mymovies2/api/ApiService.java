@@ -1,7 +1,5 @@
 package com.example.android.mymovies2.api;
 
-import com.example.android.mymovies2.BuildConfig;
-import com.example.android.mymovies2.Constants;
 import com.example.android.mymovies2.pojo.MovieResponse;
 import com.example.android.mymovies2.pojo.SearchResponse;
 
@@ -22,4 +20,6 @@ public interface ApiService {
     Observable<SearchResponse> getSearchResults(@Query("api_key") String apiKey,
                                                 @Query("language") String language,
                                                 @Query("query") String searchQuery);
+
+
 }
