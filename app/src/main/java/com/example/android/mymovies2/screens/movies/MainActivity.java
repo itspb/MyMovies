@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements MovieListFragment
     private SearchView.OnQueryTextListener getOnQueryTextListener(Activity activity, CursorAdapter adapter) {
         return new SearchView.OnQueryTextListener() {
 
-            private int waitingTime = 1000;
+            private int waitingTime = 500;
             private CountDownTimer timer;
 
             @Override
