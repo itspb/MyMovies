@@ -19,12 +19,7 @@ import com.example.android.mymovies2.R;
 import com.example.android.mymovies2.adapters.MovieAdapter;
 import com.example.android.mymovies2.adapters.MyRVScrollListener;
 import com.example.android.mymovies2.pojo.Movie;
-import com.example.android.mymovies2.utils.JsonUtils;
-import com.example.android.mymovies2.utils.NetworkUtils;
 
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class MovieListFragment extends Fragment {
@@ -33,7 +28,6 @@ public class MovieListFragment extends Fragment {
     private MovieAdapter movieAdapter;
     private RecyclerView recyclerViewMovies;
     private OnFragmentInteractionListener mListener;
-    private ArrayList<Integer> nowPlayingIds;
 
     private boolean isLoading = false;
     private int page = 1;
@@ -62,7 +56,6 @@ public class MovieListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        loadNowPlayingIds();
         recyclerViewMovies = view.findViewById(R.id.recyclerViewMovies);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(requireContext(), 2);
         recyclerViewMovies.setLayoutManager(gridLayoutManager);
@@ -88,7 +81,6 @@ public class MovieListFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         mViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
         mViewModel.getMovies().observe(this, new Observer<List<Movie>>() {
             @Override
@@ -117,7 +109,7 @@ public class MovieListFragment extends Fragment {
             RecyclerView.ViewHolder viewHolder = (RecyclerView.ViewHolder) v.getTag();
             int position = viewHolder.getAdapterPosition();
             Movie movie = movieAdapter.getMovies().get(position);
-            MovieDetailFragment movieDetailFragment = MovieDetailFragment.newInstance(movie.getId(), nowPlayingIds);
+            MovieDetailFragment movieDetailFragment = MovieDetailFragment.newInstance(movie);
             FragmentManager fragmentManager = getFragmentManager();
             // TODO add animation
             fragmentManager.beginTransaction()
@@ -131,20 +123,4 @@ public class MovieListFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         void setProgressbarLoadingVisibility(boolean isVisible);
     }
-
-    private void loadNowPlayingIds() {
-        JSONObject jsonObjectTotalPagesNowPlaying = NetworkUtils.getJSONForNowPlaying(1);
-        int totalPagesNowPlaying = JsonUtils.getTotalPagesNowPlayingFromJSON(jsonObjectTotalPagesNowPlaying);
-        nowPlayingIds = new ArrayList<>();
-        for (int page = 1; page <= totalPagesNowPlaying; page++) {
-            JSONObject jsonObjectNowPlaying = NetworkUtils.getJSONForNowPlaying(page);
-            ArrayList<Integer> onePageIds = JsonUtils.getNowPlayingFromJSON(jsonObjectNowPlaying);
-            Log.i("loading", String.valueOf(page));
-            nowPlayingIds.addAll(onePageIds);
-        }
-    }
-
-
-
-
 }

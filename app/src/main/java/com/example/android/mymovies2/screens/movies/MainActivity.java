@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Parcelable;
 import android.provider.BaseColumns;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
@@ -23,7 +24,10 @@ import android.widget.AutoCompleteTextView;
 import android.widget.ProgressBar;
 
 import com.example.android.mymovies2.R;
+import com.example.android.mymovies2.pojo.Movie;
 import com.example.android.mymovies2.pojo.SearchResult;
+import com.example.android.mymovies2.pojo.TV;
+import com.example.android.mymovies2.utils.JsonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements MovieListFragment
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        JsonUtils.loadNowPlayingIds();
         FragmentManager fragmentManager = getSupportFragmentManager();
         MovieListFragment movieListFragment = MovieListFragment.newInstance();
         fragmentManager.beginTransaction()
@@ -149,7 +154,39 @@ public class MainActivity extends AppCompatActivity implements MovieListFragment
 
             @Override
             public boolean onSuggestionClick(int index) {
-                // TODO: handle suggestion item click
+                SearchResult sResult = searchResultsMovies.get(index);
+                String type = sResult.getMediaType();
+                Parcelable parcelable = null;
+                if (type.equals("movie")) {
+                    parcelable = new Movie(
+                            sResult.getId(),
+                            sResult.getVoteAverage(),
+                            sResult.getTitle(),
+                            sResult.getPosterPath(),
+                            sResult.getOriginalTitle(),
+                            sResult.getOverview(),
+                            sResult.getReleaseDate());
+                } else if (type.equals("tv")) {
+                    parcelable = new TV(
+                            sResult.getOriginalName(),
+                            sResult.getName(),
+                            sResult.getFirstAirDate(),
+                            sResult.getId(),
+                            sResult.getVoteAverage(),
+                            sResult.getOverview(),
+                            sResult.getPosterPath());
+                } else {
+                    //TODO person
+                }
+
+                MovieDetailFragment movieDetailFragment = MovieDetailFragment.newInstance(parcelable);
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                // TODO add animation
+                fragmentManager.beginTransaction()
+                        .addToBackStack(null)
+                        .hide(fragmentManager.findFragmentByTag("fragment_movie_list"))
+                        .add(R.id.activityMainFrame, movieDetailFragment, "fragment_movie_detail")
+                        .commit();
                 return true;
             }
         };

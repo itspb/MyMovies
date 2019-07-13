@@ -21,6 +21,9 @@ public interface MovieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertMovies(List<Movie> movies);
 
+    @Insert
+    void insertMovie(Movie movie);
+
     @Query("DELETE FROM movies")
     void deleteAllMovies();
 }

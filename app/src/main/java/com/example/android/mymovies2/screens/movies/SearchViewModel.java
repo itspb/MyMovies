@@ -2,10 +2,8 @@ package com.example.android.mymovies2.screens.movies;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.example.android.mymovies2.Constants;
 import com.example.android.mymovies2.api.ApiSearchFactory;
@@ -62,4 +60,5 @@ public class SearchViewModel extends AndroidViewModel {
         compositeDisposable.dispose();
         super.onCleared();
     }
+
 }

@@ -114,5 +114,20 @@ public class MovieViewModel extends AndroidViewModel {
             return null;
         }
     }
+
+    public void insertMovie(Movie movie) {
+        new InsertTask().execute(movie);
+    }
+
+    private static class InsertTask extends AsyncTask<Movie, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Movie... movies) {
+            if (movies != null && movies.length > 0) {
+                db.movieDao().insertMovie(movies[0]);
+            }
+            return null;
+        }
+    }
 }
 

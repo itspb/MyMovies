@@ -1,11 +1,14 @@
 package com.example.android.mymovies2.pojo;
 
-import com.google.gson.annotations.Expose;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.example.android.mymovies2.Constants;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class TV {
+public class TV implements Parcelable {
     @SerializedName("original_name")
     private String originalName;
     @SerializedName("genre_ids")
@@ -32,6 +35,68 @@ public class TV {
     private String overview;
     @SerializedName("poster_path")
     private String posterPath;
+
+    protected TV(Parcel in) {
+        originalName = in.readString();
+        name = in.readString();
+        popularity = in.readDouble();
+        originCountry = in.createStringArrayList();
+        voteCount = in.readInt();
+        firstAirDate = in.readString();
+        backdropPath = in.readString();
+        originalLanguage = in.readString();
+        id = in.readInt();
+        voteAverage = in.readDouble();
+        overview = in.readString();
+        posterPath = in.readString();
+    }
+
+    public static final Creator<TV> CREATOR = new Creator<TV>() {
+        @Override
+        public TV createFromParcel(Parcel in) {
+            return new TV(in);
+        }
+
+        @Override
+        public TV[] newArray(int size) {
+            return new TV[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(originalName);
+        dest.writeString(name);
+        dest.writeDouble(popularity);
+        dest.writeStringList(originCountry);
+        dest.writeInt(voteCount);
+        dest.writeString(firstAirDate);
+        dest.writeString(backdropPath);
+        dest.writeString(originalLanguage);
+        dest.writeInt(id);
+        dest.writeDouble(voteAverage);
+        dest.writeString(overview);
+        dest.writeString(posterPath);
+    }
+
+    public TV(String originalName, String name, String firstAirDate, int id, double voteAverage, String overview, String posterPath) {
+        this.originalName = originalName;
+        this.name = name;
+        this.firstAirDate = firstAirDate;
+        this.id = id;
+        this.voteAverage = voteAverage;
+        this.overview = overview;
+        this.posterPath = posterPath;
+    }
+
+    public String getFullSmallPosterPath () {
+        return Constants.BASE_URL_POSTER + Constants.SMALL_POSTER_SIZE + posterPath;
+    }
 
     public String getOriginalName() {
         return originalName;
@@ -136,5 +201,4 @@ public class TV {
     public void setPosterPath(String posterPath) {
         this.posterPath = posterPath;
     }
-
 }

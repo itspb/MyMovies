@@ -1,5 +1,7 @@
 package com.example.android.mymovies2.utils;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,6 +13,7 @@ public class JsonUtils {
     private static final String KEY_TOTAL_PAGES = "total_pages";
     private static final String KEY_RESULTS = "results";
     private static final String KEY_ID = "id";
+    public static ArrayList<Integer> nowPlayingIds;
 
     public static int getTotalPagesNowPlayingFromJSON (JSONObject jsonObject) {
     int result = 0;
@@ -41,5 +44,17 @@ public class JsonUtils {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public static void loadNowPlayingIds() {
+        JSONObject jsonObjectTotalPagesNowPlaying = NetworkUtils.getJSONForNowPlaying(1);
+        int totalPagesNowPlaying = JsonUtils.getTotalPagesNowPlayingFromJSON(jsonObjectTotalPagesNowPlaying);
+        nowPlayingIds = new ArrayList<>();
+        for (int page = 1; page <= totalPagesNowPlaying; page++) {
+            JSONObject jsonObjectNowPlaying = NetworkUtils.getJSONForNowPlaying(page);
+            ArrayList<Integer> onePageIds = JsonUtils.getNowPlayingFromJSON(jsonObjectNowPlaying);
+            Log.i("loading", String.valueOf(page));
+            nowPlayingIds.addAll(onePageIds);
+        }
     }
 }
