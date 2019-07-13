@@ -15,9 +15,9 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="16dp"
         android:adjustViewBounds="true"
-        app:layout_constraintBottom_toTopOf="@+id/borderAfterPoster"
+        app:layout_constraintBottom_toTopOf="@+id/barrier"
         app:layout_constraintEnd_toStartOf="@+id/guidelineVertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -104,7 +104,7 @@
         android:paddingEnd="4dp"
         android:textColor="#000000"
         app:layout_constraintStart_toStartOf="@+id/guidelineVertical"
-        app:layout_constraintBottom_toBottomOf="@id/imageViewPoster" />
+        app:layout_constraintTop_toBottomOf="@id/textViewStatus" />
 
     <Button
         android:id="@+id/buttonShowSessions"
@@ -120,15 +120,23 @@
         android:textColor="#000000"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/guidelineVertical"
-        app:layout_constraintBottom_toTopOf="@id/buttonAddToFav"/>
+        app:layout_constraintTop_toBottomOf="@id/buttonAddToFav"/>
+
+    <android.support.constraint.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="buttonShowSessions,imageViewPoster" />
 
     <View
         style="@style/BorderStyle"
-        android:id="@+id/borderAfterPoster"
+        android:id="@+id/borderAfterBarrier"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toTopOf="@id/scrollView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewPoster" />
+        app:layout_constraintTop_toBottomOf="@+id/barrier" />
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -142,7 +150,7 @@
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/borderAfterPoster"
+        app:layout_constraintTop_toBottomOf="@+id/borderAfterBarrier"
         app:layout_constraintBottom_toBottomOf="parent">
         <LinearLayout
             android:orientation="vertical"

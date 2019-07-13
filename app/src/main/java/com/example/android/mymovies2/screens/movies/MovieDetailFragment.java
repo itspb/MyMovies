@@ -94,8 +94,6 @@ public class MovieDetailFragment extends Fragment {
             }
         });
         Picasso.get().load(movie.getFullSmallPosterPath()).into(imageViewPoster); // Повторная загрузка не происходит, picasso берет из своего кеша.
-
-
     }
 
     private String getStatus() {

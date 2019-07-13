@@ -31,7 +31,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements MovieListFragment.OnFragmentInteractionListener {
 
     private SearchViewModel searchViewModel;
-    private ArrayList<String> searchResultsList;
+    private ArrayList<String> searchResultsTitles;
+    private List<SearchResult> searchResultsMovies;
     private CursorAdapter cursorAdapter;
     private ProgressBar progressBarSearching;
     private ProgressBar progressBarLoading;
@@ -63,9 +64,9 @@ public class MainActivity extends AppCompatActivity implements MovieListFragment
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         AutoCompleteTextView searchAutoCompleteTextView = (AutoCompleteTextView) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         searchAutoCompleteTextView.setThreshold(2);
-        String [] columNames = { SearchManager.SUGGEST_COLUMN_TEXT_1 };
+        String [] columnNames = { SearchManager.SUGGEST_COLUMN_TEXT_1 };
         int [] viewIds = { android.R.id.text1 };
-        cursorAdapter = new SimpleCursorAdapter(this, R.layout.query_suggestion, null, columNames, viewIds);
+        cursorAdapter = new SimpleCursorAdapter(this, R.layout.query_suggestion, null, columnNames, viewIds);
 
         searchView.setSuggestionsAdapter(cursorAdapter);
         searchView.setOnSuggestionListener(getOnSuggestionClickListener());
@@ -79,17 +80,21 @@ public class MainActivity extends AppCompatActivity implements MovieListFragment
             }
         });
 
-        searchResultsList = new ArrayList<>();
+        searchResultsTitles = new ArrayList<>();
+        searchResultsMovies = new ArrayList<>();
         searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
         searchViewModel.getSearchResults().observe(this, new Observer<List<SearchResult>>() {
             @Override
             public void onChanged(@Nullable List<SearchResult> searchResults) {
                 if (searchResults != null) {
-                    searchResultsList.clear();
+                    searchResultsMovies.clear();
+                    searchResultsTitles.clear();
+                    searchResultsMovies = searchResults;
+
                     for (SearchResult result : searchResults) {
-                        searchResultsList.add((result.getMediaType().equals("movie")) ? result.getTitle() : result.getName());
+                        searchResultsTitles.add((result.getMediaType().equals("movie")) ? result.getTitle() : result.getName());
                     }
-                    Cursor cursor = createCursorFromResult(searchResultsList);
+                    Cursor cursor = createCursorFromResult(searchResultsTitles);
                     cursorAdapter.swapCursor(cursor);
                     progressBarSearching.setVisibility(View.INVISIBLE);
                 }
